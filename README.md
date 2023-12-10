@@ -68,8 +68,9 @@ Aila is currently very experimental and could certainly be much improved. You ar
 ## Acknowledgments
 
 - Thanks to Morten Helmstedt for making the Aula interface.
-- Thanks to GPT4 for helping out with the coding
-- Thanks to Sommer AI https://www.sommer-ai.dk for supporting the work.
+- Thanks to the open source LLM community for their amazing work.
+- Thanks to GPT4 for helping out with the coding.
+- Thanks to Sommer AI https://www.sommer-ai.dk for supporting the project.
 
 ---
 
