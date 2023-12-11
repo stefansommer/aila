@@ -1,5 +1,7 @@
 # aula.py
-# Author: Morten Helmstedt. E-mail: helmstedt@gmail.com
+#
+# This interface to Aula is written by Morten Helmstedt. E-mail: helmstedt@gmail.com see https://helmstedt.dk/2021/05/aulas-api-en-opdatering/
+#
 ''' An example of how to log in to the Danish LMS Aula (https://aula.dk) and
 extract data from the API. Could be further developed to also submit data and/or to
 create your own web or terminal interface(s) for Aula.'''
