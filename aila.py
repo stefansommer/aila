@@ -41,6 +41,8 @@ import json
 # set up LLM
 #model_name = 'mistral-7b-instruct-v0.1.Q4_0.gguf'
 model_name = 'mistral-7b-openorca.Q4_0.gguf'
+#model = GPT4All(model_name)
+# If you already have the model downloaded
 model_path = Path.home() / 'Library' / 'Application Support' / 'nomic.ai' / 'GPT4All'
 model = GPT4All(model_name, model_path, allow_download=False)
 
@@ -62,6 +64,7 @@ def get_data():
     cutoff = lambda current_time: current_time - timedelta(days=4)
     posts = []
     msgs = []
+    daily_summary = ""
     # extract data and generate responses
     for post in aula_posts['data']['posts']:
         try:
@@ -77,13 +80,16 @@ def get_data():
                 continue
 
             with model.chat_session(system_template, prompt_template):
-                summary = model.generate("Here is a message from the school: <begin message>%s</end message> Please make a one sentence summary" % text)
+                summary = model.generate("Here is a message: <begin message>%s</end message> Please make a one sentence summary" % text)
                 important = model.generate("Does the message contain important information? Please answer 'yes' or 'no'")
 
             summary = re.sub(r"###.*", "", summary) # string prompt if included in response
             important = 'yes' in important.lower()
             #print("%s, %s: %s,%s\n" % (title,sender,summary,important))
             posts.append({'title':title,'sender':sender,'text':text,'response':summary,'important':important})
+
+            if True and date_object > datetime.now(date_object.tzinfo)- timedelta(days=1):
+                daily_summary += "<begin message>%s</end message>\n" % text
         except:
             pass
 
@@ -102,24 +108,32 @@ def get_data():
                 continue
 
             with model.chat_session(system_template, prompt_template):
-                summary = model.generate("Here is a message from the school: <begin message>%s</end message> Please make a one sentence summary" % text)
+                summary = model.generate("Here is a message: <begin message>%s</end message> Please make a one sentence summary" % text)
                 important = model.generate("Does the message contain important information? Please answer 'yes' or 'no'")
             important = 'yes' in important.lower()
             summary = re.sub(r"###.*", "", summary) # string prompt if included in response
             #print("%s, %s: %s\n" % (title,sender,summary))
             msgs.append({'title':title,'sender':sender,'text':text,'response':summary,'important':important})
+
+            if True and date_object > datetime.now(date_object.tzinfo)- timedelta(days=1):
+                daily_summary += "<begin message>%s</end message>\n" % text
         except:
             pass
+    
+    # make daily summary
+    if daily_summary:
+        with model.chat_session(system_template, prompt_template):
+            daily_summary = model.generate("Here all todays messages from the school: %s\n Please make a short summary of the messages." % daily_summary)
 
     # save store to file
     with open('aila.json', 'w') as file:
         json.dump(store, file)
 
-    return posts, msgs
+    return posts,msgs,daily_summary
 
 # output to user
 def update_aila():
-    posts, msgs = get_data()
+    posts,msgs,daily_summary = get_data()
     #posts, msgs = [],[]
     #posts = [{'title':'title','sender':'sender','text':'text','response':'response','important':True},
     #         {'title':'title','sender':'sender','text':'text','response':'response','important':False}]
@@ -127,11 +141,11 @@ def update_aila():
     important = False
     if posts:
         for post in posts:
-            output.append(("%s, %s, %s: %s\n\n" % (post['title'],post['sender'],post['title'],post['response']),post['important']))
+            output.append(("%s, %s, %s: %s\n" % (post['title'],post['sender'],post['title'],post['response']),post['important']))
             important = important or post['important']
     if msgs:
         for msg in msgs:
-            output.append(("%s, %s, %s: %s\n\n" % (msg['title'],msg['sender'],msg['title'],msg['response']),msg['important']))
+            output.append(("%s, %s, %s: %s\n" % (msg['title'],msg['sender'],msg['title'],msg['response']),msg['important']))
             important = important or msg['important']
 
     original = ""
@@ -143,7 +157,7 @@ def update_aila():
             original += "%s, %s: %s\n\n" % (msg['title'],msg['sender'],msg['text'])
 
     # display on console and return
-    return output,important,original
+    return output,important,original,daily_summary
 
 # display gui
 import tkinter as tk
@@ -178,18 +192,29 @@ text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
 def update_text():
-    output,important,original = update_aila()
+    # Enable the widget to update the text
+    text_widget.config(state=tk.NORMAL)
+    text_widget.delete('1.0', tk.END)
+    text_widget.insert(tk.END, "Getting data from Aula...")
+    # Disable the widget to prevent user editing
+    text_widget.config(state=tk.DISABLED)
+
+    # get data
+    output,important,original,daily_summary = update_aila()
 
     # Enable the widget to update the text
     text_widget.config(state=tk.NORMAL)
     text_widget.delete('1.0', tk.END)
 
-    # For example, setting it to the current time or any other dynamic data
+    text_widget.insert(tk.END, "Updated at " + time.strftime("%H:%M:%S") + ".\n\n")
     if important:
-        text_widget.insert(tk.END, "Some messages seems to be important.\n")
+        text_widget.insert(tk.END, "Some messages seems to be important. You might want to check them out. ")
+        if daily_summary:
+            text_widget.insert(tk.END, "Summary:\n" + daily_summary + "\n\n\n")
+        else:
+            text_widget.insert(tk.END, "\n")
     if not important:
         text_widget.insert(tk.END, "No important messages found - you likely didn't miss anything.\n")
-    text_widget.insert(tk.END, "Updated at " + time.strftime("%H:%M:%S") + ".\n\n")
     
     for (text,important) in output:
         # Insert the message followed by a newline
@@ -208,12 +233,35 @@ def update_text():
     #text_widget.see(tk.END)
     # Disable the widget to prevent user editing
     text_widget.config(state=tk.DISABLED)
-    
-    # Schedule this function to run again after 1 hour (3600000 milliseconds)
-    root.after(60*60*1000, update_text)
 
-# Call update_text for the first time
-root.after(1000, update_text)
+
+def run_task():
+    # Scheduled task to run
+    #print("Task running... " + datetime.now().isoformat())
+    try:
+        update_text()
+    except Exception as e:
+        print(e)
+
+    with open("last_run_time.json", "w") as file:
+        # Save the current time as the last run time
+        json.dump({"last_run": datetime.now().isoformat()}, file)
+
+def check_run():
+    try:
+        with open("last_run_time.json", "r") as file:
+            last_run_time = datetime.fromisoformat(json.load(file)["last_run"])
+    except (FileNotFoundError, ValueError, KeyError):
+        last_run_time = datetime.now() - timedelta(hours=25)
+
+    if datetime.now() - last_run_time > timedelta(hours=24):
+        run_task()
+
+    # Schedule the next check in 1 minute (60000 milliseconds)
+    root.after(60000, check_run)
+
+# Start the check loop
+check_run()
 
 # Start the GUI event loop
 root.mainloop()

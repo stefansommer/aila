@@ -1,2 +1,6 @@
 tk
 gpt4all
+requests
+bs4
+python-dateutil
+lxml

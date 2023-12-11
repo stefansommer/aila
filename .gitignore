@@ -1,1 +1,7 @@
 userinfo.json
+aila.json
+last_run_time.json
+__pycache__/
+bin/
+lib/
+pyvenv.cfg
