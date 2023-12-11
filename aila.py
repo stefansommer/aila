@@ -190,17 +190,24 @@ text_widget.tag_configure("bold", font=bold_font)
 # Layout the widgets in the window
 text_widget.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+def init_text():
+    # initial text
+    text_widget.config(state=tk.NORMAL)
+    text_widget.delete('1.0', tk.END)
+    text_widget.insert(tk.END, "Getting data from Aula... (this might take a while)\n")
+    text_widget.config(state=tk.DISABLED)
 
 def update_text():
     # Enable the widget to update the text
     text_widget.config(state=tk.NORMAL)
     text_widget.delete('1.0', tk.END)
-    text_widget.insert(tk.END, "Getting data from Aula...")
+    text_widget.insert(tk.END, "Getting data from Aula...\n")
     # Disable the widget to prevent user editing
     text_widget.config(state=tk.DISABLED)
 
     # get data
     output,important,original,daily_summary = update_aila()
+    #output = []; important = False; original = ""; daily_summary = ""
 
     # Enable the widget to update the text
     text_widget.config(state=tk.NORMAL)
@@ -261,7 +268,8 @@ def check_run():
     root.after(60000, check_run)
 
 # Start the check loop
-check_run()
+root.after(1000, init_text)
+root.after(2000, check_run)
 
 # Start the GUI event loop
 root.mainloop()

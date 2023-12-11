@@ -61,6 +61,10 @@ Run the script:
 
 `python aila.py`
 
+The script will fetch Aula information every 24 hours. Just leave it running and you will be updated every day. It will discard messages it has already seen. Important messages will be displayed in boldface. Original messages as read directly from Aula are displayed in the bottom of the text window.
+
+If you wish to rerun Aila from scratch, delete the files `last_run_time.json` and `aila.json`.
+
 ## Contributing
 
 Aila is currently very experimental and could certainly be much improved. You are very welcome to send pull requests.
