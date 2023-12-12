@@ -196,14 +196,14 @@ def init_text():
     # initial text
     text_widget.config(state=tk.NORMAL)
     text_widget.delete('1.0', tk.END)
-    text_widget.insert(tk.END, "Getting data from Aula... (this might take a while)\n")
+    text_widget.insert(tk.END, "Getting data from Aula and running LLM... (this might take a while)\n")
     text_widget.config(state=tk.DISABLED)
 
 def update_text():
     # Enable the widget to update the text
     text_widget.config(state=tk.NORMAL)
     text_widget.delete('1.0', tk.END)
-    text_widget.insert(tk.END, "Getting data from Aula...\n")
+    text_widget.insert(tk.END, "Getting data from Aula and running LLM... (this might take a while)\n")
     # Disable the widget to prevent user editing
     text_widget.config(state=tk.DISABLED)
 
@@ -252,16 +252,17 @@ def run_task():
     except Exception as e:
         print(e)
 
-    with open("last_run_time.json", "w") as file:
-        # Save the current time as the last run time
-        json.dump({"last_run": datetime.now().isoformat()}, file)
+    #with open("last_run_time.json", "w") as file:
+    #    # Save the current time as the last run time
+    #    json.dump({"last_run": datetime.now().isoformat()}, file)
 
 def check_run():
-    try:
-        with open("last_run_time.json", "r") as file:
-            last_run_time = datetime.fromisoformat(json.load(file)["last_run"])
-    except (FileNotFoundError, ValueError, KeyError):
-        last_run_time = datetime.now() - timedelta(hours=25)
+    last_run_time = datetime.now() - timedelta(hours=25)
+    #try:
+    #    with open("last_run_time.json", "r") as file:
+    #        last_run_time = datetime.fromisoformat(json.load(file)["last_run"])
+    #except (FileNotFoundError, ValueError, KeyError):
+    #    last_run_time = datetime.now() - timedelta(hours=25)
 
     if datetime.now() - last_run_time > timedelta(hours=24):
         run_task()
