@@ -256,8 +256,12 @@ def run_task():
     #    # Save the current time as the last run time
     #    json.dump({"last_run": datetime.now().isoformat()}, file)
 
+# last time check_run() was exectued
+global last_run_time
+last_run_time = datetime.now() - timedelta(hours=25)
+
 def check_run():
-    last_run_time = datetime.now() - timedelta(hours=25)
+    global last_run_time
     #try:
     #    with open("last_run_time.json", "r") as file:
     #        last_run_time = datetime.fromisoformat(json.load(file)["last_run"])
@@ -266,6 +270,7 @@ def check_run():
 
     if datetime.now() - last_run_time > timedelta(hours=24):
         run_task()
+        last_run_time = datetime.now()
 
     # Schedule the next check in 1 minute (60000 milliseconds)
     root.after(60000, check_run)
