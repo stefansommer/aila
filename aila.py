@@ -48,7 +48,7 @@ model = GPT4All(model_name)
 #model_path = Path.home() / 'Library' / 'Application Support' / 'nomic.ai' / 'GPT4All'
 #model = GPT4All(model_name, model_path, allow_download=False)
 
-system_template = 'A chat between a user and an artificial intelligence assistant. The user is a parent who has children in school and kindergarten. The parent receives messages from the school and kindergarten, but the parent is only interested in messages that are absolutely imporant: This could be birthday parties for his kids, or meetings with the teachers. The parent particularly dislikes messages that are not important. This could be long discussions between parents, or messages about other kids having lost some of their stuff. The parent only likes very short answers. '
+system_template = 'A chat between a user and an artificial intelligence assistant. The user is a parent who has children in school and kindergarten. The parent receives messages from the school and kindergarten, but the parent is only interested in messages that are absolutely important: This could be birthday parties for his kids, or meetings with the teachers. The parent particularly dislikes messages that are not important. This could be long discussions between parents, or messages about other kids having lost some of their stuff. The parent only likes very short answers. '
 prompt_template = '### Human: {0}\n### Assistant:' 
 
 # read saved info from file
