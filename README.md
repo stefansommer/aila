@@ -4,7 +4,7 @@ Aila - A Christmas present for Danish parents: Open source AI to save you from e
 
 ## What's Aila?
 
-`aila` is your own AI to understand the nuances of school-parent communication and give you an update of only the absolutely essential information from Aula. It is easy to get lost in the daily messages from Aula that mix really important information from teachers with nice messages about the daily menu in the kindergarten and long political discussions between parents on the essentials of bringing up kids in exactly the way they prefer.
+`aila` is your own AI to read school-parent communication and give you an update of only the absolutely essential information from Aula. It is easy to get lost in the daily messages from Aula that mix important information from teachers with nice messages about the daily menu in the kindergarten and long discussions between parents on the nuances of bringing up kids.
 
 Open source LLM (large language model), why? Aula contains data that you don't want to upload to any external server. Therefore, it uses a locally running open source LLM. This means that all data will stay private, no data will leave your machine. 
 
