@@ -1,6 +1,6 @@
 # Aila: AI for Aula
 
-Aila - A Christmas present for Danish parents: Open source AI to save you from endlessly clicking through the Danish school/kindergarten-parent app Aula https://www.aula.dk.
+Aila - Open source AI to save you from endlessly clicking through the Danish school/kindergarten-parent app Aula https://www.aula.dk.
 
 ## What's Aila?
 
