@@ -99,12 +99,12 @@ def run():
 
     # Login succeeded without an HTTP error code and API requests can begin 
     if success == True and response.status_code == 200:
-        #print("Login lykkedes")
+        print("Login lykkedes")
 
         # All API requests go to the below url
         # Each request has a number of parameters, of which method is always included
         # Data is returned in JSON
-        url = 'https://www.aula.dk/api/v17/'
+        url = 'https://www.aula.dk/api/v18/'
 
         ### First API request. This request must be run to generate correct correct cookies for subsequent requests. ###
         params = {
@@ -112,7 +112,7 @@ def run():
             }
         # Perform request, convert to json and print on screen
         response_profile = session.get(url, params=params).json()
-        #print(json.dumps(response_profile, indent=4))
+        print(json.dumps(response_profile, indent=4))
 
         ### Second API request. This request must be run to generate correct correct cookies for subsequent requests. ###
         params = {
@@ -121,7 +121,7 @@ def run():
         }
         # Perform request, convert to json and print on screen
         response_profile_context = session.get(url, params=params).json()
-        #print(json.dumps(response_profile_context, indent=4))
+        print(json.dumps(response_profile_context, indent=4))
 
         # Loop to get institutions and children associated with profile and save
         # them to lists
@@ -144,8 +144,8 @@ def run():
         }
 
         # Perform request, convert to json and print on screen
-        notifications = session.get(url, params=params).json()
-        #print(json.dumps(notifications, indent=4))
+        notifications_response = session.get(url, params=params).json()
+        print(json.dumps(notifications_response, indent=4))
 
         ### Fourth example API request, only succeeds when the third has been run before ###
         params = {
@@ -157,7 +157,6 @@ def run():
 
         # Perform request, convert to json and print on screen
         messages = session.get(url, params=params).json()
-        #print(json.dumps(messages, indent=4))
 
         ### Fifth example. getAllPosts uses a combination of children and instituion profiles. ###
         params = {
@@ -165,15 +164,84 @@ def run():
             'parent': 'profile',
             'index': "0",
             'institutionProfileIds[]': children_and_institution_profiles,
-            'limit': '2'
+            'limit': '10'
         }
 
         # Perform request, convert to json and print on screen
         posts = session.get(url, params=params).json()
-        #print(json.dumps(posts, indent=4))
+
+        #### Sixth example. Posting a calender event. ###
+        #params = (
+        #    ('method', 'calendar.createSimpleEvent'),
+        #)
+
+        ## Manually setting the cookie "profile_change". This probably has to do with posting as a parent.
+        #session.cookies['profile_change'] = '2'
+
+        ## Csrfp-token is manually added to session headers.
+        #session.headers['csrfp-token'] = session.cookies['Csrfp-Token']
+
+        #data = {
+        #    'title': 'This is a test',
+        #    'description': '<p>A really nice test.</p>',
+        #    'startDateTime': '2021-05-18T14:30:00.0000+02:00',
+        #    'endDateTime': '2021-05-18T15:00:00.0000+02:00',
+        #    'startDate': '2021-05-17',
+        #    'endDate': '2021-05-17',
+        #    'startTime': '12:00:19',
+        #    'endTime': '12:30:19',
+        #    'id': '',
+        #    'institutionCode': response_profile['data']['profiles'][0]['institutionProfiles'][0]['institutionCode'],
+        #    'creatorInstProfileId': response_profile['data']['profiles'][0]['institutionProfiles'][0]['id'],
+        #    'type': 'event',
+        #    'allDay': False,
+        #    'private': False,
+        #    'primaryResource': {},
+        #    'additionalLocations': [],
+        #    'invitees': [],
+        #    'invitedGroups': [],
+        #    'invitedGroupIds': [],
+        #    'invitedGroupHomes': [],
+        #    'responseRequired': True,
+        #    'responseDeadline': None,
+        #    'resources': [],
+        #    'attachments': [],
+        #    'oldStartDateTime': '',
+        #    'oldEndDateTime': '',
+        #    'isEditEvent': False,
+        #    'addToInstitutionCalendar': False,
+        #    'hideInOwnCalendar': False,
+        #    'inviteeIds': [],
+        #    'additionalResources': [],
+        #    'pattern': 'never',
+        #    'occurenceLimit': 0,
+        #    'weekdayMask': [
+        #        False,
+        #        False,
+        #        False,
+        #        False,
+        #        False,
+        #        False,
+        #        False
+        #    ],
+        #    'maxDate': None,
+        #    'interval': 0,
+        #    'lessonId': '',
+        #    'noteToClass': '',
+        #    'noteToSubstitute': '',
+        #    'eventId': '',
+        #    'isPrivate': False,
+        #    'resourceIds': [],
+        #    'additionalLocationIds': [],
+        #    'additionalResourceIds': [],
+        #    'attachmentIds': []
+        #}
+
+        #response_calendar = session.post(url, params=params, json=data).json()
+        #print(json.dumps(response_calendar, indent=4))
 
         return posts,messages
 
     # Login failed for some unknown reason
     else:
-        raise Exception("Noget gik galt med login")
+        print("Noget gik galt med login")
