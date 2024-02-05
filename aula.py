@@ -112,7 +112,7 @@ def run():
             }
         # Perform request, convert to json and print on screen
         response_profile = session.get(url, params=params).json()
-        print(json.dumps(response_profile, indent=4))
+        #print(json.dumps(response_profile, indent=4))
 
         ### Second API request. This request must be run to generate correct correct cookies for subsequent requests. ###
         params = {
@@ -121,7 +121,7 @@ def run():
         }
         # Perform request, convert to json and print on screen
         response_profile_context = session.get(url, params=params).json()
-        print(json.dumps(response_profile_context, indent=4))
+        #print(json.dumps(response_profile_context, indent=4))
 
         # Loop to get institutions and children associated with profile and save
         # them to lists
@@ -145,7 +145,7 @@ def run():
 
         # Perform request, convert to json and print on screen
         notifications_response = session.get(url, params=params).json()
-        print(json.dumps(notifications_response, indent=4))
+        #print(json.dumps(notifications_response, indent=4))
 
         ### Fourth example API request, only succeeds when the third has been run before ###
         params = {
